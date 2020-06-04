@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Button = () => {
-  return <button>Hi from a react app!</button>;
+  return <button>Button</button>;
 };
 
 export default Button;

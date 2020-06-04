@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 
-import Button from './components/Button';
+import Button from '@components/Button';
 
 const mainElement = document.createElement('div');
 document.body.appendChild(mainElement);
