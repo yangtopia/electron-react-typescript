@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Button = () => {
-  return <button>Button</button>;
+const Button: React.FC = () => {
+  return <button type="button">Button</button>;
 };
 
 export default Button;

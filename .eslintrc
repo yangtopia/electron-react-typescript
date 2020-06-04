@@ -53,6 +53,7 @@
     "react/prop-types": 0,
     "jsx-a11y/anchor-is-valid": [2, { "aspects": ["noHref"] }],
     "jsx-a11y/label-has-associated-control": 0,
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
