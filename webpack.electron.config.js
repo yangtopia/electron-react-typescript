@@ -1,25 +1,43 @@
 const path = require('path');
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-module.exports = {
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  devtool: 'source-map',
-  entry: './electron/main.ts',
+const baseConfig = require('./webpack.base.config');
+
+module.exports = merge.smart(baseConfig, {
   target: 'electron-main',
+  entry: {
+    main: './src/electron/main.ts',
+  },
   module: {
     rules: [
       {
-        test: /\.(js|ts|tsx)$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true,
+          babelrc: false,
+          presets: [
+            ['@babel/preset-env', { targets: 'maintained node versions' }],
+            '@babel/preset-typescript',
+          ],
+          plugins: [
+            ['@babel/plugin-proposal-class-properties', { loose: true }],
+          ],
         },
       },
     ],
   },
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: '[name].js',
-  },
-};
+  plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      reportFiles: ['src/electron/**/*'],
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development',
+      ),
+    }),
+  ],
+});

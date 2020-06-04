@@ -1,3 +1,2 @@
-webpack.electron.config.js
-webpack.react.config.js
+webpack.*.config.js
 dist/
