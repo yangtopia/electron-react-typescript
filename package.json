@@ -8,7 +8,9 @@
     "dev:electron": "cross-env NODE_ENV=development webpack --config webpack.electron.config.js --mode development && electron .",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config webpack.react.config.js --mode development",
     "lint:react": "eslint --ext=jsx,js,tsx,ts src",
-    "lint:electron": "eslint --ext=jsx,js,tsx,ts electron"
+    "lint:electron": "eslint --ext=jsx,js,tsx,ts electron",
+    "build:electron": "cross-env NODE_ENV=production webpack --config webpack.electron.config.js",
+    "build:react": "cross-env NODE_ENV=production webpack --config webpack.react.config.js"
   },
   "keywords": [],
   "author": "",
