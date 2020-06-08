@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -73,6 +74,15 @@ module.exports = merge.smart(baseConfig, {
     ],
   },
   plugins: [
+    new CspHtmlWebpackPlugin(
+      {},
+      {
+        nonceEnabled: {
+          'script-src': true,
+          'style-src': false,
+        },
+      },
+    ),
     new MiniCssExtractPlugin({
       filename: 'css/style.css',
     }),
@@ -80,7 +90,9 @@ module.exports = merge.smart(baseConfig, {
       reportFiles: ['src/renderer/**/*'],
     }),
     new webpack.NamedModulesPlugin(),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'Electron React Typescript',
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development',

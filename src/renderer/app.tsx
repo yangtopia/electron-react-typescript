@@ -17,6 +17,7 @@ const App = () => {
   return (
     <>
       <h1>Hi from a react app!! {`${isLoggedIn}`}</h1>
+      <h1>{process.env.ENV}</h1>
       <Button />
     </>
   );

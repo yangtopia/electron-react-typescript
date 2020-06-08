@@ -1,4 +1,6 @@
 const path = require('path');
+const DotEnvPlugin = require('dotenv-webpack');
+const isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   mode: 'development',
@@ -14,5 +16,9 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   devtool: 'source-map',
-  plugins: [],
+  plugins: [
+    new DotEnvPlugin({
+      path: isDev ? './.env.dev' : './.env',
+    }),
+  ],
 };

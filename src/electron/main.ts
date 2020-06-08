@@ -2,10 +2,9 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
-let mainWindow: BrowserWindow | null;
-
+let browserWindow: BrowserWindow | null;
 const createWindow = async () => {
-  mainWindow = new BrowserWindow({
+  browserWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -15,15 +14,15 @@ const createWindow = async () => {
 
   if (process.env.NODE_ENV === 'development') {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
-    mainWindow.loadURL(`http://localhost:4000`);
+    browserWindow.loadURL(`http://localhost:4000`);
 
-    mainWindow.webContents.once('dom-ready', () => {
-      if (mainWindow) {
-        mainWindow.webContents.openDevTools();
+    browserWindow.webContents.once('dom-ready', () => {
+      if (browserWindow) {
+        browserWindow.webContents.openDevTools();
       }
     });
   } else {
-    mainWindow.loadURL(
+    browserWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
@@ -32,8 +31,8 @@ const createWindow = async () => {
     );
   }
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  browserWindow.on('closed', () => {
+    browserWindow = null;
   });
 };
 
@@ -46,9 +45,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (browserWindow === null) {
     createWindow();
   }
 });
-
-app.allowRendererProcessReuse = true;
