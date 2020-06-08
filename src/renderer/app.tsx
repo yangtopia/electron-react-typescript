@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import { AppContainer } from 'react-hot-loader';
 
 import Button from '@components/Button';
 
@@ -15,4 +16,13 @@ const App = () => {
   );
 };
 
-ReactDom.render(<App />, mainElement);
+const render = (Component: () => JSX.Element) => {
+  ReactDom.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    mainElement,
+  );
+};
+
+render(App);
