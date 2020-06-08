@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -30,6 +31,10 @@ module.exports = merge.smart(baseConfig, {
           plugins: [
             ['@babel/plugin-proposal-class-properties', { loose: true }],
             [
+              'styled-components',
+              { ssr: false, displayName: true, preprocess: false },
+            ],
+            [
               'module-resolver',
               {
                 root: ['.'],
@@ -44,11 +49,8 @@ module.exports = merge.smart(baseConfig, {
       },
       {
         test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        exclude: /node_modules/,
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/,
@@ -71,6 +73,9 @@ module.exports = merge.smart(baseConfig, {
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'css/style.css',
+    }),
     new ForkTsCheckerWebpackPlugin({
       reportFiles: ['src/renderer/**/*'],
     }),

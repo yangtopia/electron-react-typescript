@@ -1,6 +1,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { loginAction } from '@store/auth';
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+  color: blue;
+`;
 
 const Button: React.FC = () => {
   const dispatch = useDispatch();
@@ -8,9 +13,9 @@ const Button: React.FC = () => {
     dispatch(loginAction());
   };
   return (
-    <button type="button" onClick={handleClick}>
+    <StyledButton type="button" onClick={handleClick}>
       Button
-    </button>
+    </StyledButton>
   );
 };
 

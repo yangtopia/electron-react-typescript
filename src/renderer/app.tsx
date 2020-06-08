@@ -7,6 +7,7 @@ import Button from '@components/Button';
 
 import store from './store';
 import { selectIsLoggedIn } from './store/auth';
+import './style/global.scss';
 
 const mainElement = document.createElement('div');
 document.body.appendChild(mainElement);
