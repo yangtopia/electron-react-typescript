@@ -5,8 +5,8 @@ import * as url from 'url';
 let browserWindow: BrowserWindow | null;
 const createWindow = async () => {
   browserWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1600,
+    height: 900,
     webPreferences: {
       nodeIntegration: true,
     },

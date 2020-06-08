@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
+      "@containers/*": ["src/renderer/containers/*"],
       "@components/*": ["src/renderer/components/*"],
       "@store/*": ["src/renderer/store/*"]
     }

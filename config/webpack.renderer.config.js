@@ -41,6 +41,7 @@ module.exports = merge.smart(baseConfig, {
                 root: ['.'],
                 alias: {
                   '@components': './src/renderer/components',
+                  '@containers': './src/renderer/containers',
                   '@store': './src/renderer/store',
                 },
               },
