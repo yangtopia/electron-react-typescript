@@ -4,12 +4,12 @@
   "description": "",
   "main": "./dist/main.js",
   "scripts": {
-    "build:electron": "cross-env NODE_ENV=production webpack --config webpack.electron.prod.config.js",
-    "build:renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",
+    "build:electron": "cross-env NODE_ENV=production webpack --config ./config/webpack.electron.prod.config.js",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config ./config/webpack.renderer.prod.config.js",
     "build": "npm run build:electron && npm run build:renderer",
     "lint": "eslint --ext=jsx,js,tsx,ts src",
-    "dev:renderer": "webpack-dev-server --config webpack.renderer.dev.config.js",
-    "dev:electron": "webpack --config webpack.electron.config.js && electron ./dist/main.js",
+    "dev:renderer": "webpack-dev-server --config ./config/webpack.renderer.dev.config.js",
+    "dev:electron": "webpack --config ./config/webpack.electron.config.js && electron ./dist/main.js",
     "dev": "cross-env START_HOT=1 npm run dev:renderer",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
@@ -41,7 +41,12 @@
   },
   "dependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "typesafe-actions": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -53,6 +58,7 @@
     "@hot-loader/react-dom": "^16.13.0",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
@@ -81,6 +87,7 @@
     "node-sass": "^4.14.1",
     "prettier": "2.0.5",
     "react-hot-loader": "^4.12.21",
+    "redux-devtools-extension": "^2.13.8",
     "sass-loader": "^8.0.2",
     "source-map-loader": "^1.0.0",
     "style-loader": "^1.2.1",

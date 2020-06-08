@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/renderer/components/*"]
+      "@components/*": ["src/renderer/components/*"],
+      "@store/*": ["src/renderer/store/*"]
     }
   }
 }
