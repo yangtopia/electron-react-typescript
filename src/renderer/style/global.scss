@@ -1,5 +1,5 @@
-$body-color: red;
+@import '~normalize.css';
 
-body {
-  color: $body-color;
+html {
+  color: #060505;
 }
