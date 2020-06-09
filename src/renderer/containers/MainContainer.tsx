@@ -86,10 +86,15 @@ const MainContainer = () => {
     });
 
   const glbFileLoaderSubsc = onSceneReady$.subscribe((scene) => {
-    SceneLoader.Append('/assets/', 'PBR_Spheres.glb', scene, (currentScene) => {
-      // currentScene.createDefaultCameraOrLight(true, true, true);
-      // currentScene.createDefaultEnvironment();
-    });
+    SceneLoader.Append(
+      '/assets/banana/',
+      'banana_plant.obj',
+      scene,
+      (currentScene) => {
+        currentScene.createDefaultCameraOrLight(true, true, true);
+        currentScene.createDefaultEnvironment();
+      },
+    );
   });
 
   useEffect(() => {
