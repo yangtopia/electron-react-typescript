@@ -13,8 +13,9 @@
     "paths": {
       "@containers/*": ["src/renderer/containers/*"],
       "@components/*": ["src/renderer/components/*"],
-      "@store/*": ["src/renderer/store/*"]
+      "@store/*": ["src/renderer/store/*"],
+      "@assets/*": ["assets/*"]
     },
-    "noImplicitAny": false,
+    "noImplicitAny": false
   }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, ChangeEvent } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import {
   FreeCamera,
   Vector3,
@@ -9,6 +9,7 @@ import {
   SceneLoader,
   Nullable,
 } from 'babylonjs';
+import 'babylonjs-loaders';
 import styled from 'styled-components';
 import { Subject } from 'rxjs';
 import { map, withLatestFrom, filter } from 'rxjs/operators';
@@ -17,8 +18,8 @@ import _set from 'lodash/set';
 import _update from 'lodash/update';
 
 import SceneComponent from '@components/SceneComponent';
-import { selectIsLoggedIn } from '@store/auth';
-import FileUploadButton from '@components/FileUploadButton';
+// import { selectIsLoggedIn } from '@store/auth';
+// import FileUploadButton from '@components/FileUploadButton';
 
 const Wrap = styled.div`
   position: relative;
@@ -33,10 +34,10 @@ const Title = styled.h1`
 `;
 
 const MainContainer = () => {
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  // const isLoggedIn = useSelector(selectIsLoggedIn);
   const onSceneReady$ = new Subject<Scene>();
   const onRender$ = new Subject<Scene>();
-  const onChangeFile$ = new Subject<ChangeEvent<HTMLInputElement>>();
+  // const onChangeFile$ = new Subject<ChangeEvent<HTMLInputElement>>();
 
   const box$ = onSceneReady$.pipe(
     map((scene) => {
@@ -56,7 +57,7 @@ const MainContainer = () => {
       }
 
       // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-      const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+      const light = new HemisphericLight('light', new Vector3(1, 1, 0), scene);
 
       // Default intensity is 1. Let's dim the light a small amount
       _set(light, 'intensity', 0.7);
@@ -65,7 +66,7 @@ const MainContainer = () => {
       const boxMesh = MeshBuilder.CreateBox('box', { size: 2 }, scene);
 
       // Move the box upward 1/2 its height
-      _set(boxMesh, 'position.y', 1);
+      _set(boxMesh, 'position.y', 3);
 
       // Our built-in 'ground' shape.
       MeshBuilder.CreateGround('ground', { width: 6, height: 6 }, scene);
@@ -84,21 +85,18 @@ const MainContainer = () => {
       });
     });
 
-  const onChangeFileSubsc = onChangeFile$
-    .pipe(withLatestFrom(onSceneReady$))
-    .subscribe(([e, scene]) => {
-      if (e.target.files) {
-        const file = e.target.files[0];
-        SceneLoader.Append('/assets/', 'Alien.glb', scene, (currentScene) => {
-          console.log(currentScene);
-        });
-      }
+  const glbFileLoaderSubsc = onSceneReady$.subscribe((scene) => {
+    SceneLoader.Append('/assets/', 'PBR_Spheres.glb', scene, (currentScene) => {
+      // currentScene.createDefaultCameraOrLight(true, true, true);
+      // currentScene.createDefaultEnvironment();
     });
+  });
 
   useEffect(() => {
     return () => {
       onRenderSubsc.unsubscribe();
-      onChangeFileSubsc.unsubscribe();
+      glbFileLoaderSubsc.unsubscribe();
+      // onChangeFileSubsc.unsubscribe();
     };
   }, []);
 
@@ -111,7 +109,6 @@ const MainContainer = () => {
         </span>{' '}
         BabylonJS
       </Title>
-      <FileUploadButton onChangeFile={(e) => onChangeFile$.next(e)} />
       <SceneComponent
         id="canvas"
         onRender={(scene) => onRender$.next(scene)}

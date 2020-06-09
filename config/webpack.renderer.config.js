@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -43,6 +44,7 @@ module.exports = merge.smart(baseConfig, {
                   '@components': './src/renderer/components',
                   '@containers': './src/renderer/containers',
                   '@store': './src/renderer/store',
+                  '@assets': './assets',
                 },
               },
             ],
@@ -66,10 +68,6 @@ module.exports = merge.smart(baseConfig, {
           },
         ],
       },
-      {
-        test: /\.glb$/,
-        use: ['file-loader'],
-      },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
         enforce: 'pre',
@@ -79,6 +77,9 @@ module.exports = merge.smart(baseConfig, {
     ],
   },
   plugins: [
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'assets', to: 'assets', force: true }],
+    }),
     new CspHtmlWebpackPlugin(
       {},
       {
