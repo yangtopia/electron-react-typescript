@@ -5,7 +5,7 @@ import {
   EngineOptions,
   SceneOptions,
   Nullable,
-} from '@babylonjs/core';
+} from 'babylonjs';
 import { fromEvent } from 'rxjs';
 import styled from 'styled-components';
 
