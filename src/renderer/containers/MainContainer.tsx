@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, ChangeEvent } from 'react';
 import { useSelector } from 'react-redux';
 import {
   FreeCamera,
   Vector3,
   HemisphericLight,
   MeshBuilder,
-  Mesh,
   Scene,
+  SceneLoader,
+  Nullable,
 } from 'babylonjs';
 import styled from 'styled-components';
 import { Subject } from 'rxjs';
@@ -17,6 +18,7 @@ import _update from 'lodash/update';
 
 import SceneComponent from '@components/SceneComponent';
 import { selectIsLoggedIn } from '@store/auth';
+import FileUploadButton from '@components/FileUploadButton';
 
 const Wrap = styled.div`
   position: relative;
@@ -34,6 +36,7 @@ const MainContainer = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const onSceneReady$ = new Subject<Scene>();
   const onRender$ = new Subject<Scene>();
+  const onChangeFile$ = new Subject<ChangeEvent<HTMLInputElement>>();
 
   const box$ = onSceneReady$.pipe(
     map((scene) => {
@@ -43,10 +46,14 @@ const MainContainer = () => {
       // This targets the camera to scene origin
       camera.setTarget(Vector3.Zero());
 
-      const canvas = scene.getEngine().getRenderingCanvas() as HTMLElement;
+      const canvas = scene.getEngine().getRenderingCanvas() as Nullable<
+        HTMLElement
+      >;
 
-      // This attaches the camera to the canvas
-      camera.attachControl(canvas, true);
+      if (canvas) {
+        // This attaches the camera to the canvas
+        camera.attachControl(canvas, true);
+      }
 
       // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
       const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
@@ -67,13 +74,33 @@ const MainContainer = () => {
     filter((meshBox) => !_isEmpty(meshBox)),
   );
 
-  onRender$.pipe(withLatestFrom(box$)).subscribe(([scene, mesh]) => {
-    const deltaTimeInMillis = scene.getEngine().getDeltaTime();
-    const rpm = 10;
-    _update(mesh, 'rotation.y', (value: number) => {
-      return value + (rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000);
+  const onRenderSubsc = onRender$
+    .pipe(withLatestFrom(box$))
+    .subscribe(([scene, mesh]) => {
+      const deltaTimeInMillis = scene.getEngine().getDeltaTime();
+      const rpm = 10;
+      _update(mesh, 'rotation.y', (value: number) => {
+        return value + (rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000);
+      });
     });
-  });
+
+  const onChangeFileSubsc = onChangeFile$
+    .pipe(withLatestFrom(onSceneReady$))
+    .subscribe(([e, scene]) => {
+      if (e.target.files) {
+        const file = e.target.files[0];
+        SceneLoader.Append('/assets/', 'Alien.glb', scene, (currentScene) => {
+          console.log(currentScene);
+        });
+      }
+    });
+
+  useEffect(() => {
+    return () => {
+      onRenderSubsc.unsubscribe();
+      onChangeFileSubsc.unsubscribe();
+    };
+  }, []);
 
   return (
     <Wrap>
@@ -84,10 +111,11 @@ const MainContainer = () => {
         </span>{' '}
         BabylonJS
       </Title>
+      <FileUploadButton onChangeFile={(e) => onChangeFile$.next(e)} />
       <SceneComponent
+        id="canvas"
         onRender={(scene) => onRender$.next(scene)}
         onSceneReady={(scene) => onSceneReady$.next(scene)}
-        id="canvas"
       />
     </Wrap>
   );

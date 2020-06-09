@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { SyntheticEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 
-const StyledButton = styled.input.attrs({
+const StyledInputFile = styled.input.attrs({
   type: 'file',
 })`
   position: fixed;
@@ -10,11 +10,11 @@ const StyledButton = styled.input.attrs({
 `;
 
 interface Props {
-  onChangeFile: (e: any) => void;
+  onChangeFile: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FileUploadButton: React.FC<Props> = ({ onChangeFile }) => {
-  return <StyledButton onChange={onChangeFile} />;
+  return <StyledInputFile onChange={onChangeFile} />;
 };
 
 export default FileUploadButton;
