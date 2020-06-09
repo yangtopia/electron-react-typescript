@@ -64,7 +64,7 @@ const MainContainer = () => {
       MeshBuilder.CreateGround('ground', { width: 6, height: 6 }, scene);
       return boxMesh;
     }),
-    filter((d) => !_isEmpty(d)),
+    filter((meshBox) => !_isEmpty(meshBox)),
   );
 
   onRender$.pipe(withLatestFrom(box$)).subscribe(([scene, mesh]) => {
