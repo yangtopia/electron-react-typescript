@@ -35,7 +35,7 @@ const SceneComponent: React.FC<Props> = ({
 }) => {
   const canvasRef = useRef<Nullable<HTMLCanvasElement>>(null);
 
-  const [loaded, setLoaded] = useState(false);
+  const [isLoaded, setLoaded] = useState(false);
   const [scene, setScene] = useState<Nullable<Scene>>(null);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const SceneComponent: React.FC<Props> = ({
   }, [scene]);
 
   useEffect(() => {
-    if (!loaded) {
+    if (!isLoaded) {
       setLoaded(true);
       const engine = new Engine(
         canvasRef.current,

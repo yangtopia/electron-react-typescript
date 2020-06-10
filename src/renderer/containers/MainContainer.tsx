@@ -39,7 +39,7 @@ const MainContainer = () => {
   const onRender$ = new Subject<Scene>();
   // const onChangeFile$ = new Subject<ChangeEvent<HTMLInputElement>>();
 
-  const box$ = onSceneReady$.pipe(
+  const boxMesh$ = onSceneReady$.pipe(
     map((scene) => {
       // This creates and positions a free camera (non-mesh)
       const camera = new FreeCamera('camera1', new Vector3(0, 5, -10), scene);
@@ -76,7 +76,7 @@ const MainContainer = () => {
   );
 
   const onRenderSubsc = onRender$
-    .pipe(withLatestFrom(box$))
+    .pipe(withLatestFrom(boxMesh$))
     .subscribe(([scene, mesh]) => {
       const deltaTimeInMillis = scene.getEngine().getDeltaTime();
       const rpm = 10;
