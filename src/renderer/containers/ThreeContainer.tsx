@@ -1,5 +1,5 @@
 import React from 'react';
-import { Canvas as ThreeCanvas } from 'react-three-fiber';
+import { Canvas } from 'react-three-fiber';
 import styled from 'styled-components';
 import ThreeBoxComponent from '@components/three/Box';
 
@@ -27,12 +27,12 @@ const ThreeContainer = () => {
         </span>{' '}
         ThreeJS
       </Title>
-      <ThreeCanvas>
+      <Canvas>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <ThreeBoxComponent position={[-1.2, 0, 0]} />
         <ThreeBoxComponent position={[1.2, 0, 0]} />
-      </ThreeCanvas>
+      </Canvas>
     </Wrap>
   );
 };
