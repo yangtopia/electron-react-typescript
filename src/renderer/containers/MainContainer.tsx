@@ -87,8 +87,8 @@ const MainContainer = () => {
 
   const glbFileLoaderSubsc = onSceneReady$.subscribe((scene) => {
     SceneLoader.Append(
-      '/assets/banana/',
-      'banana_plant.obj',
+      '/assets/oshkosh13/',
+      'oshkosh13.glb',
       scene,
       (currentScene) => {
         currentScene.createDefaultCameraOrLight(true, true, true);
