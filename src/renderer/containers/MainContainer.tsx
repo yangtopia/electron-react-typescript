@@ -69,7 +69,7 @@ const MainContainer = () => {
       _set(boxMesh, 'position.y', 3);
 
       // Our built-in 'ground' shape.
-      MeshBuilder.CreateGround('ground', { width: 6, height: 6 }, scene);
+      // MeshBuilder.CreateGround('ground', { width: 6, height: 6 }, scene);
       return boxMesh;
     }),
     filter((meshBox) => !_isEmpty(meshBox)),
@@ -87,8 +87,8 @@ const MainContainer = () => {
 
   const glbFileLoaderSubsc = onSceneReady$.subscribe((scene) => {
     SceneLoader.Append(
-      '/assets/oshkosh13/',
-      'oshkosh13.glb',
+      '/assets/glb/',
+      'flamingo.glb',
       scene,
       (currentScene) => {
         currentScene.createDefaultCameraOrLight(true, true, true);
