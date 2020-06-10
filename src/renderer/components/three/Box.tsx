@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from 'react-three-fiber';
+import { useFrame } from 'react-three-fiber';
 import _update from 'lodash/update';
-import { Object3D } from 'three';
+import { Object3D, Vector3 } from 'three';
 
 const ThreeBoxComponent: React.FC<any> = (props) => {
   const mesh = useRef<Object3D>();

@@ -3,7 +3,7 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
+// const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const baseConfig = require('./webpack.base.config');
@@ -80,15 +80,15 @@ module.exports = merge.smart(baseConfig, {
     new CopyWebpackPlugin({
       patterns: [{ from: 'assets', to: 'assets', force: true }],
     }),
-    new CspHtmlWebpackPlugin(
-      {},
-      {
-        nonceEnabled: {
-          'script-src': true,
-          'style-src': false,
-        },
-      },
-    ),
+    // new CspHtmlWebpackPlugin(
+    //   {},
+    //   {
+    //     nonceEnabled: {
+    //       'script-src': true,
+    //       'style-src': false,
+    //     },
+    //   },
+    // ),
     new MiniCssExtractPlugin({
       filename: 'css/style.css',
     }),

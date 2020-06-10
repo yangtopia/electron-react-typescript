@@ -29,6 +29,7 @@ const Title = styled.h1`
   left: 20px;
   top: 0;
   color: #fff;
+  z-index: 1;
 `;
 
 const BabylonContainer = () => {

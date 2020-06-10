@@ -42,6 +42,7 @@
   "dependencies": {
     "babylonjs": "^4.1.0",
     "babylonjs-loaders": "^4.1.0",
+    "drei": "0.0.57",
     "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
