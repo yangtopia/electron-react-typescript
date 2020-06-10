@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
-import MainContainer from '@containers/MainContainer';
+import LayoutContainer from '@containers/LayoutContainer';
 import store from './store';
 import './style/global.scss';
 
@@ -21,4 +21,4 @@ const render = (Component: () => JSX.Element) => {
   );
 };
 
-render(MainContainer);
+render(LayoutContainer);

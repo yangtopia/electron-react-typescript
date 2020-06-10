@@ -24,7 +24,7 @@ interface Props {
   id: string;
 }
 
-const SceneComponent: React.FC<Props> = ({
+const BabylonSceneComponent: React.FC<Props> = ({
   antialias,
   engineOptions,
   adaptToDeviceRatio,
@@ -87,4 +87,4 @@ const SceneComponent: React.FC<Props> = ({
   return <Canvas ref={canvasRef} {...rest} />;
 };
 
-export default SceneComponent;
+export default BabylonSceneComponent;

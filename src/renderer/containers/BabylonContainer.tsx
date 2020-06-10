@@ -1,5 +1,4 @@
 import React, { useEffect, ChangeEvent } from 'react';
-// import { useSelector } from 'react-redux';
 import {
   FreeCamera,
   Vector3,
@@ -17,27 +16,24 @@ import _isEmpty from 'lodash/isEmpty';
 import _set from 'lodash/set';
 import _update from 'lodash/update';
 
-import SceneComponent from '@components/SceneComponent';
-// import { selectIsLoggedIn } from '@store/auth';
-// import FileUploadButton from '@components/FileUploadButton';
+import SceneComponent from '@components/babylon/Scene';
 
 const Wrap = styled.div`
   position: relative;
-  height: 100vh;
+  width: 50%;
+  height: 100%;
 `;
 
 const Title = styled.h1`
-  position: fixed;
+  position: absolute;
   left: 20px;
   top: 0;
   color: #fff;
 `;
 
-const MainContainer = () => {
-  // const isLoggedIn = useSelector(selectIsLoggedIn);
+const BabylonContainer = () => {
   const onSceneReady$ = new Subject<Scene>();
   const onRender$ = new Subject<Scene>();
-  // const onChangeFile$ = new Subject<ChangeEvent<HTMLInputElement>>();
 
   const boxMesh$ = onSceneReady$.pipe(
     map((scene) => {
@@ -101,7 +97,6 @@ const MainContainer = () => {
     return () => {
       onRenderSubsc.unsubscribe();
       glbFileLoaderSubsc.unsubscribe();
-      // onChangeFileSubsc.unsubscribe();
     };
   }, []);
 
@@ -123,4 +118,4 @@ const MainContainer = () => {
   );
 };
 
-export default MainContainer;
+export default BabylonContainer;
