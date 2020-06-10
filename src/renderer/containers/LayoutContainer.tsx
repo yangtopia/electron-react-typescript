@@ -15,7 +15,7 @@ const MainContainer = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   return (
     <Wrap>
-      <BabylonContainer />
+      {/* <BabylonContainer /> */}
       <ThreeContainer />
     </Wrap>
   );
