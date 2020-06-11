@@ -10,9 +10,14 @@ import {
   distinctUntilChanged,
   scan,
   startWith,
+  filter,
 } from 'rxjs/operators';
 import _update from 'lodash/update';
 import _head from 'lodash/head';
+import _isEqual from 'lodash/isEqual';
+import _intersectionWith from 'lodash/intersectionWith';
+import _differenceWith from 'lodash/differenceWith';
+import _unionWith from 'lodash/unionWith';
 
 import BoxMesh from '@components/three/BoxMesh';
 import ExtrudeMesh from '@components/three/ExtrudeMesh';
@@ -42,8 +47,6 @@ const ThreeContainer = () => {
   const mousemoveEvent$ = fromEvent<MouseEventExtended>(window, 'mousemove');
   const canvasContext$ = new Subject<CanvasContext>();
 
-  const [t, setT] = useState();
-
   const initCanvasContext$ = canvasContext$.pipe(
     map((ctx) => {
       const { scene } = ctx;
@@ -70,44 +73,31 @@ const ThreeContainer = () => {
     distinctUntilChanged(),
   );
 
-  // intersectedFrontMesh$.subscribe((mesh) => {
-  //   if (mesh) {
-  //     const material = mesh.material as MeshStandardMaterial;
-  //     material.color = new Color('hotpink');
-  //     setT(mesh);
-  //   } else {
-
-  //   }
-  //   console.log(mesh);
-  // });
-
-  // .subscribe(([event, ctx]) => {
-  //   event.preventDefault();
-  //   const { raycaster, camera, scene } = ctx;
-  //   const { clientX, clientY } = event;
-  //   const mouseX = (clientX / window.innerWidth) * 2 - 1;
-  //   const mouseY = -(clientY / window.innerHeight) * 2 + 1;
-  //   const mouseVector = new Vector2(mouseX, mouseY);
-
-  //   raycaster.setFromCamera(mouseVector, camera);
-
-  //   const intersects = raycaster.intersectObjects(scene.children);
-  // if (intersects.length > 0) {
-  //   const head = intersects[0];
-  //   const object = head.object as Mesh;
-  //   const material = object.material as MeshStandardMaterial;
-  //   const currentHex = material.emissive.getHex();
-  //   if (currentHex === 0) {
-  //     material.emissive.setHex(0xff000);
-  //   } else {
-  //     material.emissive.setHex(0);
-  //   }
-  // }
-  // });
+  intersectedFrontMesh$
+    .pipe(
+      scan<Mesh | undefined, [Mesh | undefined, boolean]>(
+        (acc, value) => {
+          if (value) {
+            return [value, true];
+          }
+          return [_head(acc), false] as [Mesh | undefined, boolean];
+        },
+        [undefined, false],
+      ),
+      startWith([undefined, false]),
+    )
+    .subscribe((meshs) => {
+      const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
+      if (mesh) {
+        const material = mesh.material as MeshStandardMaterial;
+        material.color = isHovered ? new Color('hotpink') : new Color('orange');
+      }
+    });
 
   useEffect(() => {
+    const initCanvasSubsc = initCanvasContext$.subscribe();
     return () => {
-      // intersects$.unsubscribe();
+      initCanvasSubsc.unsubscribe();
     };
   }, []);
 
@@ -118,13 +108,13 @@ const ThreeContainer = () => {
         colorManagement
         onCreated={(context) => canvasContext$.next(context)}
       >
-        {/* <spotLight color={new Color(0x555555)} angle={1.5} /> */}
+        <spotLight color={new Color(0x555555)} angle={1.5} />
         <ambientLight color={new Color(0x555555)} />
         <pointLight position={[10, 10, 10]} />
         <BoxMesh position={[-1.2, 0, 0]} name="box1" />
         <BoxMesh position={[1.2, 0, 0]} name="box2" />
         {/* <ExtrudeMesh /> */}
-        <TrackballControls rotateSpeed={1.0} zoomSpeed={1.2} panSpeed={0.8} />
+        <TrackballControls rotateSpeed={10.0} />
       </Canvas>
     </Wrap>
   );
