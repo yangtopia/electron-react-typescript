@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { Vector3 } from 'three';
 import { TrackballControls, Stars } from 'drei';
 import { Canvas, CanvasContext } from 'react-three-fiber';
 import { Subject, fromEvent } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
-import BoxMeshComponent from '@components/three/BoxMesh';
-import ExtrudeMeshComponent from '@components/three/ExtrudeMesh';
-import { Vector3 } from 'three';
+import BoxMesh from '@components/three/BoxMesh';
+import ExtrudeMesh from '@components/three/ExtrudeMesh';
 
 const Wrap = styled.div`
   position: relative;
@@ -56,13 +56,7 @@ const ThreeContainer = () => {
 
   return (
     <Wrap>
-      <Title>
-        Electron React Typescript{' '}
-        <span role="img" aria-label="emoji">
-          ❤️
-        </span>{' '}
-        ThreeJS
-      </Title>
+      <Title>Electron React Typescript X ThreeJS</Title>
       <Canvas
         colorManagement
         onCreated={(context) => canvasContext$.next(context)}
@@ -70,9 +64,9 @@ const ThreeContainer = () => {
         <Stars />
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <BoxMeshComponent position={[-1.2, 0, 0]} />
-        <BoxMeshComponent position={[1.2, 0, 0]} />
-        <ExtrudeMeshComponent />
+        <BoxMesh position={[-1.2, 0, 0]} />
+        <BoxMesh position={[1.2, 0, 0]} />
+        <ExtrudeMesh />
         <TrackballControls />
       </Canvas>
     </Wrap>

@@ -1,16 +1,17 @@
 import React, { useRef, useState, useMemo } from 'react';
 import _update from 'lodash/update';
 import {
-  Object3D,
+  Mesh,
   Vector2,
   Shape,
   Vector3,
   MathUtils,
   CatmullRomCurve3,
 } from 'three';
+import { MeshProps } from './types';
 
-const ExtrudeMeshComponent: React.FC<any> = (props) => {
-  const mesh = useRef<Object3D>();
+const ExtrudeMesh: React.FC<MeshProps> = (props) => {
+  const mesh = useRef<Mesh>();
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -63,4 +64,4 @@ const ExtrudeMeshComponent: React.FC<any> = (props) => {
   );
 };
 
-export default ExtrudeMeshComponent;
+export default ExtrudeMesh;

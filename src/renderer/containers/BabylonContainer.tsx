@@ -103,13 +103,7 @@ const BabylonContainer = () => {
 
   return (
     <Wrap>
-      <Title>
-        Electron React Typescript{' '}
-        <span role="img" aria-label="emoji">
-          ❤️
-        </span>{' '}
-        BabylonJS
-      </Title>
+      <Title>Electron React Typescript X BabylonJS</Title>
       <SceneComponent
         id="canvas"
         onRender={(scene) => onRender$.next(scene)}

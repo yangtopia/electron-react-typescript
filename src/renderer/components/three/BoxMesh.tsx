@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useFrame } from 'react-three-fiber';
+import { Mesh } from 'three';
 import _update from 'lodash/update';
-import { Object3D } from 'three';
+import { MeshProps } from './types';
 
-const ThreeBoxComponent: React.FC<any> = (props) => {
-  const mesh = useRef<Object3D>();
-  // Set up state for the hovered and active state
+const BoxMesh: React.FC<MeshProps> = (props) => {
+  const mesh = useRef<Mesh>();
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -39,4 +39,4 @@ const ThreeBoxComponent: React.FC<any> = (props) => {
   );
 };
 
-export default ThreeBoxComponent;
+export default BoxMesh;
