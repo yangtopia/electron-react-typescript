@@ -1,5 +1,4 @@
 import React, { useRef, useState, useMemo } from 'react';
-import _update from 'lodash/update';
 import {
   Mesh,
   Vector2,
@@ -8,6 +7,7 @@ import {
   MathUtils,
   CatmullRomCurve3,
 } from 'three';
+import _update from 'lodash/update';
 import { MeshProps } from './types';
 
 const ExtrudeMesh: React.FC<MeshProps> = (props) => {
