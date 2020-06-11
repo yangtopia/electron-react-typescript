@@ -78,9 +78,14 @@ const ThreeContainer = () => {
       scan<Mesh | undefined, [Mesh | undefined, boolean]>(
         (acc, value) => {
           if (value) {
+            const prevMesh = acc[0];
+            if (prevMesh) {
+              const prevMeshMaterial = prevMesh.material as MeshStandardMaterial;
+              prevMeshMaterial.color = new Color('orange');
+            }
             return [value, true];
           }
-          return [_head(acc), false] as [Mesh | undefined, boolean];
+          return [acc[0], false];
         },
         [undefined, false],
       ),
