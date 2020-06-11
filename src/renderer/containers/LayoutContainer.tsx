@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { selectIsLoggedIn } from '@store/auth';
-import BabylonContainer from './BabylonContainer';
+// import BabylonContainer from './BabylonContainer';
 import ThreeContainer from './ThreeContainer';
 
 const Wrap = styled.div`
