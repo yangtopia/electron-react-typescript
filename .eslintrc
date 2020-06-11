@@ -43,6 +43,7 @@
     "no-underscore-dangle": 0,
     "import/prefer-default-export": 0,
     "prefer-destructuring": 0,
+    "array-callback-return": 0,
     "react/jsx-filename-extension": [
       1,
       { "extensions": ["js", ".jsx", ".tsx"] }

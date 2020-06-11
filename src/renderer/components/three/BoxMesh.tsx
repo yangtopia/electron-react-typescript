@@ -25,16 +25,13 @@ const BoxMesh: React.FC<MeshProps> = (props) => {
     <mesh
       {...props}
       ref={mesh}
-      scale={active ? [2, 1.5, 1.5] : [1, 1, 1]}
+      scale={[1, 1, 1]}
       onClick={() => setActive(!active)}
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
       <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-      <meshStandardMaterial
-        attach="material"
-        color={hovered ? 'hotpink' : 'orange'}
-      />
+      <meshStandardMaterial attach="material" color="orange" />
     </mesh>
   );
 };
