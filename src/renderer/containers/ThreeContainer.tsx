@@ -73,7 +73,8 @@ const ThreeContainer = () => {
     distinctUntilChanged(),
   );
 
-  intersectedFrontMesh$
+  const initCanvasSubsc = initCanvasContext$.subscribe();
+  const hoveredIntersectFrontMeshSubcs = intersectedFrontMesh$
     .pipe(
       scan<Mesh | undefined, [Mesh | undefined, boolean]>(
         (acc, value) => {
@@ -100,8 +101,8 @@ const ThreeContainer = () => {
     });
 
   useEffect(() => {
-    const initCanvasSubsc = initCanvasContext$.subscribe();
     return () => {
+      hoveredIntersectFrontMeshSubcs.unsubscribe();
       initCanvasSubsc.unsubscribe();
     };
   }, []);
