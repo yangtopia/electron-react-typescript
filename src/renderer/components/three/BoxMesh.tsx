@@ -3,15 +3,17 @@ import { useFrame } from 'react-three-fiber';
 import { Mesh } from 'three';
 import _update from 'lodash/update';
 import { MeshProps } from './types';
+import { BoxMeshConfig } from './BoxDatGUI';
 
-const BoxMesh: React.FC<MeshProps> = (props) => {
+interface Props extends MeshProps {
+  config: BoxMeshConfig;
+}
+
+const BoxMesh: React.FC<Props> = ({ config, ...rest }) => {
   const mesh = useRef<Mesh>();
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-
   // Rotate mesh every frame, this is outside of React without overhead
   useFrame(() => {
-    if (mesh.current) {
+    if (mesh.current && config.isRotation) {
       _update(mesh.current, 'rotation.y', (value: number) => {
         return value + 0.01;
       });
@@ -21,15 +23,9 @@ const BoxMesh: React.FC<MeshProps> = (props) => {
       });
     }
   });
+
   return (
-    <mesh
-      {...props}
-      ref={mesh}
-      scale={[1, 1, 1]}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
+    <mesh {...rest} ref={mesh} scale={[config.scaleX, 1, 1]}>
       <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
       <meshStandardMaterial attach="material" color="orange" />
     </mesh>

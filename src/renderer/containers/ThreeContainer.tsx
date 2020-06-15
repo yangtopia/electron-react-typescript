@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Vector2, Color, Mesh, MeshStandardMaterial } from 'three';
-import { TrackballControls } from 'drei';
+import { Sky, OrbitControls } from 'drei';
 import { Canvas, CanvasContext } from 'react-three-fiber';
 import { Subject, fromEvent } from 'rxjs';
 import {
@@ -10,7 +10,6 @@ import {
   distinctUntilChanged,
   scan,
   startWith,
-  filter,
 } from 'rxjs/operators';
 import _update from 'lodash/update';
 import _head from 'lodash/head';
@@ -20,14 +19,12 @@ import _differenceWith from 'lodash/differenceWith';
 import _unionWith from 'lodash/unionWith';
 
 import BoxMesh from '@components/three/BoxMesh';
-import ExtrudeMesh from '@components/three/ExtrudeMesh';
+import BoxDatGUI, { BoxMeshConfig } from '@components/three/BoxDatGUI';
 
 const Wrap = styled.div`
   position: relative;
-  /* width: 50%; */
   width: 100%;
   height: 100%;
-  /* background-color: #000; */
 `;
 
 const Title = styled.h1`
@@ -44,19 +41,18 @@ interface MouseEventExtended extends MouseEvent {
 }
 
 const ThreeContainer = () => {
+  const initialBoxData: BoxMeshConfig = {
+    name: 'react-dat-gui',
+    isRotation: false,
+    scaleX: 1,
+  };
+  const [boxMeshConfig, setBoxMeshConfig] = useState(initialBoxData);
+
   const mousemoveEvent$ = fromEvent<MouseEventExtended>(window, 'mousemove');
   const canvasContext$ = new Subject<CanvasContext>();
 
-  const initCanvasContext$ = canvasContext$.pipe(
-    map((ctx) => {
-      const { scene } = ctx;
-      scene.background = new Color('black');
-      return ctx;
-    }),
-  );
-
   const intersectedFrontMesh$ = mousemoveEvent$.pipe(
-    withLatestFrom(initCanvasContext$),
+    withLatestFrom(canvasContext$),
     map(([event, ctx]) => {
       event.preventDefault();
       const { raycaster, camera, scene } = ctx;
@@ -73,35 +69,40 @@ const ThreeContainer = () => {
     distinctUntilChanged(),
   );
 
-  const initCanvasSubsc = initCanvasContext$.subscribe();
-
-  const hoveredIntersectedSubsc = intersectedFrontMesh$
-    .pipe(
-      scan<Mesh | undefined, [Mesh | undefined, boolean]>(
-        (acc, value) => {
-          if (value) {
-            const prevMesh = acc[0];
-            if (prevMesh) {
-              const prevMeshMaterial = prevMesh.material as MeshStandardMaterial;
-              prevMeshMaterial.color = new Color('orange');
-            }
-            return [value, true];
-          }
-          return [acc[0], false];
-        },
-        [undefined, false],
-      ),
-      startWith([undefined, false]),
-    )
-    .subscribe((meshs) => {
-      const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
-      if (mesh) {
-        const material = mesh.material as MeshStandardMaterial;
-        material.color = isHovered ? new Color('hotpink') : new Color('orange');
-      }
+  useEffect(() => {
+    const initCanvasSubsc = canvasContext$.subscribe((ctx) => {
+      const { camera } = ctx;
+      camera.position.set(0, 1.5, 3);
+      return ctx;
     });
 
-  useEffect(() => {
+    const hoveredIntersectedSubsc = intersectedFrontMesh$
+      .pipe(
+        scan<Mesh | undefined, [Mesh | undefined, boolean]>(
+          (acc, value) => {
+            if (value) {
+              const prevMesh = acc[0];
+              if (prevMesh) {
+                const prevMeshMaterial = prevMesh.material as MeshStandardMaterial;
+                prevMeshMaterial.color = new Color('orange');
+              }
+              return [value, true];
+            }
+            return [acc[0], false];
+          },
+          [undefined, false],
+        ),
+        startWith([undefined, false]),
+      )
+      .subscribe((meshs) => {
+        const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
+        if (mesh) {
+          const material = mesh.material as MeshStandardMaterial;
+          material.color = isHovered
+            ? new Color('hotpink')
+            : new Color('orange');
+        }
+      });
     return () => {
       initCanvasSubsc.unsubscribe();
       hoveredIntersectedSubsc.unsubscribe();
@@ -110,18 +111,18 @@ const ThreeContainer = () => {
 
   return (
     <Wrap>
+      <BoxDatGUI data={boxMeshConfig} onUpdate={setBoxMeshConfig} />
       <Title>Electron React Typescript X ThreeJS</Title>
       <Canvas
         colorManagement
         onCreated={(context) => canvasContext$.next(context)}
       >
+        <Sky />
         <spotLight color={new Color(0x555555)} angle={1.5} />
         <ambientLight color={new Color(0x555555)} />
         <pointLight position={[10, 10, 10]} />
-        <BoxMesh position={[-1.2, 0, 0]} name="box1" />
-        <BoxMesh position={[1.2, 0, 0]} name="box2" />
-        {/* <ExtrudeMesh /> */}
-        <TrackballControls rotateSpeed={10.0} />
+        <BoxMesh name="box1" config={boxMeshConfig} />
+        <OrbitControls />
       </Canvas>
     </Wrap>
   );
