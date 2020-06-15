@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Vector2, Color, Mesh, MeshStandardMaterial } from 'three';
+import React, { useEffect } from 'react';
 import { TrackballControls } from 'drei';
+import _head from 'lodash/head';
 import { Canvas, CanvasContext } from 'react-three-fiber';
-import { Subject, fromEvent } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import {
-  map,
-  withLatestFrom,
   distinctUntilChanged,
+  map,
   scan,
   startWith,
-  filter,
+  withLatestFrom,
 } from 'rxjs/operators';
-import _update from 'lodash/update';
-import _head from 'lodash/head';
-import _isEqual from 'lodash/isEqual';
-import _intersectionWith from 'lodash/intersectionWith';
-import _differenceWith from 'lodash/differenceWith';
-import _unionWith from 'lodash/unionWith';
+import styled from 'styled-components';
+import { Color, Mesh, MeshStandardMaterial, Vector2 } from 'three';
 
 import BoxMesh from '@components/three/BoxMesh';
-import ExtrudeMesh from '@components/three/ExtrudeMesh';
 
 const Wrap = styled.div`
   position: relative;
@@ -73,35 +66,35 @@ const ThreeContainer = () => {
     distinctUntilChanged(),
   );
 
-  const initCanvasSubsc = initCanvasContext$.subscribe();
-
-  const hoveredIntersectedSubsc = intersectedFrontMesh$
-    .pipe(
-      scan<Mesh | undefined, [Mesh | undefined, boolean]>(
-        (acc, value) => {
-          if (value) {
-            const prevMesh = acc[0];
-            if (prevMesh) {
-              const prevMeshMaterial = prevMesh.material as MeshStandardMaterial;
-              prevMeshMaterial.color = new Color('orange');
-            }
-            return [value, true];
-          }
-          return [acc[0], false];
-        },
-        [undefined, false],
-      ),
-      startWith([undefined, false]),
-    )
-    .subscribe((meshs) => {
-      const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
-      if (mesh) {
-        const material = mesh.material as MeshStandardMaterial;
-        material.color = isHovered ? new Color('hotpink') : new Color('orange');
-      }
-    });
-
   useEffect(() => {
+    const initCanvasSubsc = initCanvasContext$.subscribe();
+    const hoveredIntersectedSubsc = intersectedFrontMesh$
+      .pipe(
+        scan<Mesh | undefined, [Mesh | undefined, boolean]>(
+          (acc, value) => {
+            if (value) {
+              const prevMesh = acc[0];
+              if (prevMesh) {
+                const prevMeshMaterial = prevMesh.material as MeshStandardMaterial;
+                prevMeshMaterial.color = new Color('orange');
+              }
+              return [value, true];
+            }
+            return [acc[0], false];
+          },
+          [undefined, false],
+        ),
+        startWith([undefined, false]),
+      )
+      .subscribe((meshs) => {
+        const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
+        if (mesh) {
+          const material = mesh.material as MeshStandardMaterial;
+          material.color = isHovered
+            ? new Color('hotpink')
+            : new Color('orange');
+        }
+      });
     return () => {
       initCanvasSubsc.unsubscribe();
       hoveredIntersectedSubsc.unsubscribe();
