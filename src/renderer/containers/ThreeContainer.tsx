@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Vector2, Color, Mesh, MeshStandardMaterial } from 'three';
 import { Sky, OrbitControls } from 'drei';
@@ -10,6 +10,7 @@ import {
   distinctUntilChanged,
   scan,
   startWith,
+  filter,
 } from 'rxjs/operators';
 import _update from 'lodash/update';
 import _head from 'lodash/head';
@@ -18,8 +19,9 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _differenceWith from 'lodash/differenceWith';
 import _unionWith from 'lodash/unionWith';
 
-import BoxMesh from '@components/three/BoxMesh';
-import BoxDatGUI, { BoxMeshConfig } from '@components/three/BoxDatGUI';
+import BoxMesh, { BoxMeshConfig } from '@components/three/BoxMesh';
+import useDatGUI from '@components/three/useDatGUI';
+// import BoxDatGUI, { BoxMeshConfig } from '@components/three/BoxDatGUI';
 
 const Wrap = styled.div`
   position: relative;
@@ -41,12 +43,17 @@ interface MouseEventExtended extends MouseEvent {
 }
 
 const ThreeContainer = () => {
-  const initialBoxData: BoxMeshConfig = {
+  // RE-REDERING PROBLEM
+  const boxMeshConfig = useDatGUI<BoxMeshConfig>({
     name: 'react-dat-gui',
     isRotation: false,
-    scaleX: 1,
-  };
-  const [boxMeshConfig, setBoxMeshConfig] = useState(initialBoxData);
+    scaleX: {
+      initialValue: 1,
+      min: 1,
+      max: 5,
+      step: 0.1,
+    },
+  });
 
   const mousemoveEvent$ = fromEvent<MouseEventExtended>(window, 'mousemove');
   const canvasContext$ = new Subject<CanvasContext>();
@@ -93,9 +100,10 @@ const ThreeContainer = () => {
           [undefined, false],
         ),
         startWith([undefined, false]),
+        filter(([mesh, _]) => !!mesh),
       )
       .subscribe((meshs) => {
-        const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
+        const [mesh, isHovered] = meshs as [Mesh, boolean];
         if (mesh) {
           const material = mesh.material as MeshStandardMaterial;
           material.color = isHovered
@@ -111,7 +119,7 @@ const ThreeContainer = () => {
 
   return (
     <Wrap>
-      <BoxDatGUI data={boxMeshConfig} onUpdate={setBoxMeshConfig} />
+      {/* <BoxDatGUI data={boxMeshConfig} onUpdate={setBoxMeshConfig} /> */}
       <Title>Electron React Typescript X ThreeJS</Title>
       <Canvas
         colorManagement
