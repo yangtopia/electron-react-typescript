@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { TrackballControls } from 'drei';
+import { OrbitControls, Sky } from 'drei';
 import _head from 'lodash/head';
 import { Canvas, CanvasContext } from 'react-three-fiber';
 import { fromEvent, Subject } from 'rxjs';
@@ -9,18 +9,19 @@ import {
   scan,
   startWith,
   withLatestFrom,
+  filter,
 } from 'rxjs/operators';
 import styled from 'styled-components';
 import { Color, Mesh, MeshStandardMaterial, Vector2 } from 'three';
+import BoxMesh, { BoxMeshConfig } from '@components/three/BoxMesh';
+import useDatGUI from '@components/three/useDatGUI';
 
-import BoxMesh from '@components/three/BoxMesh';
+// import BoxDatGUI, { BoxMeshConfig } from '@components/three/BoxDatGUI';
 
 const Wrap = styled.div`
   position: relative;
-  /* width: 50%; */
   width: 100%;
   height: 100%;
-  /* background-color: #000; */
 `;
 
 const Title = styled.h1`
@@ -37,19 +38,23 @@ interface MouseEventExtended extends MouseEvent {
 }
 
 const ThreeContainer = () => {
+  // RE-REDERING PROBLEM
+  const boxMeshConfig = useDatGUI<BoxMeshConfig>({
+    name: 'react-dat-gui',
+    isRotation: false,
+    scaleX: {
+      initialValue: 1,
+      min: 1,
+      max: 5,
+      step: 0.1,
+    },
+  });
+
   const mousemoveEvent$ = fromEvent<MouseEventExtended>(window, 'mousemove');
   const canvasContext$ = new Subject<CanvasContext>();
 
-  const initCanvasContext$ = canvasContext$.pipe(
-    map((ctx) => {
-      const { scene } = ctx;
-      scene.background = new Color('black');
-      return ctx;
-    }),
-  );
-
   const intersectedFrontMesh$ = mousemoveEvent$.pipe(
-    withLatestFrom(initCanvasContext$),
+    withLatestFrom(canvasContext$),
     map(([event, ctx]) => {
       event.preventDefault();
       const { raycaster, camera, scene } = ctx;
@@ -67,7 +72,12 @@ const ThreeContainer = () => {
   );
 
   useEffect(() => {
-    const initCanvasSubsc = initCanvasContext$.subscribe();
+    const initCanvasSubsc = canvasContext$.subscribe((ctx) => {
+      const { camera } = ctx;
+      camera.position.set(0, 1.5, 3);
+      return ctx;
+    });
+
     const hoveredIntersectedSubsc = intersectedFrontMesh$
       .pipe(
         scan<Mesh | undefined, [Mesh | undefined, boolean]>(
@@ -85,9 +95,10 @@ const ThreeContainer = () => {
           [undefined, false],
         ),
         startWith([undefined, false]),
+        filter(([mesh, _]) => !!mesh),
       )
       .subscribe((meshs) => {
-        const [mesh, isHovered] = meshs as [Mesh | undefined, boolean];
+        const [mesh, isHovered] = meshs as [Mesh, boolean];
         if (mesh) {
           const material = mesh.material as MeshStandardMaterial;
           material.color = isHovered
@@ -103,18 +114,18 @@ const ThreeContainer = () => {
 
   return (
     <Wrap>
+      {/* <BoxDatGUI data={boxMeshConfig} onUpdate={setBoxMeshConfig} /> */}
       <Title>Electron React Typescript X ThreeJS</Title>
       <Canvas
         colorManagement
         onCreated={(context) => canvasContext$.next(context)}
       >
+        <Sky />
         <spotLight color={new Color(0x555555)} angle={1.5} />
         <ambientLight color={new Color(0x555555)} />
         <pointLight position={[10, 10, 10]} />
-        <BoxMesh position={[-1.2, 0, 0]} name="box1" />
-        <BoxMesh position={[1.2, 0, 0]} name="box2" />
-        {/* <ExtrudeMesh /> */}
-        <TrackballControls rotateSpeed={10.0} />
+        <BoxMesh name="box1" config={boxMeshConfig} />
+        <OrbitControls />
       </Canvas>
     </Wrap>
   );
