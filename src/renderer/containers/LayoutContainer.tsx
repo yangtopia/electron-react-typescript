@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { selectIsLoggedIn } from '@store/auth';
 // import BabylonContainer from './BabylonContainer';
 import ThreeContainer from './ThreeContainer';
+import LiteGraphContainer from './LiteGraphContainer';
 
 const Wrap = styled.div`
   position: relative;
@@ -16,7 +17,8 @@ const MainContainer = () => {
   return (
     <Wrap>
       {/* <BabylonContainer /> */}
-      <ThreeContainer />
+      {/* <ThreeContainer /> */}
+      <LiteGraphContainer />
     </Wrap>
   );
 };
