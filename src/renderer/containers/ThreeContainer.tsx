@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { OrbitControls, Sky } from 'drei';
 import _head from 'lodash/head';
 import { Canvas, CanvasContext } from 'react-three-fiber';
@@ -13,10 +13,8 @@ import {
 } from 'rxjs/operators';
 import styled from 'styled-components';
 import { Color, Mesh, MeshStandardMaterial, Vector2 } from 'three';
+import { GUI } from 'dat.gui';
 import BoxMesh, { BoxMeshConfig } from '@components/three/BoxMesh';
-import useDatGUI from '@components/three/useDatGUI';
-
-// import BoxDatGUI, { BoxMeshConfig } from '@components/three/BoxDatGUI';
 
 const Wrap = styled.div`
   position: relative;
@@ -38,17 +36,13 @@ interface MouseEventExtended extends MouseEvent {
 }
 
 const ThreeContainer = () => {
-  // RE-REDERING PROBLEM
-  const boxMeshConfig = useDatGUI<BoxMeshConfig>({
+  const initialBoxConfig: BoxMeshConfig = {
     name: 'react-dat-gui',
     isRotation: false,
-    scaleX: {
-      initialValue: 1,
-      min: 1,
-      max: 5,
-      step: 0.1,
-    },
-  });
+    scaleX: 1,
+  };
+
+  const [boxConfig, setBoxConfig] = useState(initialBoxConfig);
 
   const mousemoveEvent$ = fromEvent<MouseEventExtended>(window, 'mousemove');
   const canvasContext$ = new Subject<CanvasContext>();
@@ -75,10 +69,22 @@ const ThreeContainer = () => {
     const initCanvasSubsc = canvasContext$.subscribe((ctx) => {
       const { camera } = ctx;
       camera.position.set(0, 1.5, 3);
+
+      const gui = new GUI({ autoPlace: true });
+      gui.add(initialBoxConfig, 'name').onChange((value) => {
+        setBoxConfig({ ...boxConfig, name: value });
+      });
+      gui.add(initialBoxConfig, 'isRotation').onChange((value) => {
+        setBoxConfig({ ...boxConfig, isRotation: value });
+      });
+      gui.add(initialBoxConfig, 'scaleX', 1, 5, 0.1).onChange((value) => {
+        setBoxConfig({ ...boxConfig, scaleX: value });
+      });
+
       return ctx;
     });
 
-    const hoveredIntersectedSubsc = intersectedFrontMesh$
+    const hoveredIntersectedMeshSubsc = intersectedFrontMesh$
       .pipe(
         scan<Mesh | undefined, [Mesh | undefined, boolean]>(
           (acc, value) => {
@@ -108,13 +114,12 @@ const ThreeContainer = () => {
       });
     return () => {
       initCanvasSubsc.unsubscribe();
-      hoveredIntersectedSubsc.unsubscribe();
+      hoveredIntersectedMeshSubsc.unsubscribe();
     };
   }, []);
 
   return (
     <Wrap>
-      {/* <BoxDatGUI data={boxMeshConfig} onUpdate={setBoxMeshConfig} /> */}
       <Title>Electron React Typescript X ThreeJS</Title>
       <Canvas
         colorManagement
@@ -124,7 +129,7 @@ const ThreeContainer = () => {
         <spotLight color={new Color(0x555555)} angle={1.5} />
         <ambientLight color={new Color(0x555555)} />
         <pointLight position={[10, 10, 10]} />
-        <BoxMesh name="box1" config={boxMeshConfig} />
+        <BoxMesh name="box1" config={boxConfig} />
         <OrbitControls />
       </Canvas>
     </Wrap>

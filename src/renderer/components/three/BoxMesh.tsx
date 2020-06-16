@@ -1,19 +1,13 @@
-import React, { useRef, useState, memo } from 'react';
+import React, { useRef } from 'react';
 import { useFrame } from 'react-three-fiber';
 import { Mesh } from 'three';
 import _update from 'lodash/update';
 import { MeshProps } from './types';
-import { UseDatGuiParams } from './useDatGUI';
 
-export interface BoxMeshConfig extends UseDatGuiParams {
+export interface BoxMeshConfig {
   name: string;
   isRotation: boolean;
-  scaleX: {
-    initialValue: number;
-    min: number;
-    max: number;
-    step: number;
-  };
+  scaleX: number;
 }
 
 interface Props extends MeshProps {
@@ -36,11 +30,11 @@ const BoxMesh: React.FC<Props> = ({ config, ...rest }) => {
   });
 
   return (
-    <mesh {...rest} ref={mesh} scale={[config.scaleX.initialValue, 1, 1]}>
+    <mesh {...rest} ref={mesh} scale={[config.scaleX, 1, 1]}>
       <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
       <meshStandardMaterial attach="material" color="orange" />
     </mesh>
   );
 };
 
-export default memo(BoxMesh);
+export default BoxMesh;
