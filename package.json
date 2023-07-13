@@ -108,7 +108,7 @@
     "html-webpack-plugin": "^4.3.0",
     "image-webpack-loader": "^6.0.0",
     "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^9.0.0",
     "prettier": "2.0.5",
     "react-hot-loader": "^4.12.21",
     "redux-devtools-extension": "^2.13.8",
